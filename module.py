@@ -10,18 +10,34 @@ def connect(server):
   tapServer = server
 
 def createContext(contextName):
+  """
+  Create a context object.
+  The context name should be alphanumeric without any special characters.
+  """
   global tapServer
   q = tapServer + 'contexts/' + contextName
   r = requests.post(q)
   return r
 
 def deleteContext(contextName):
+  """
+  Delete the context object and free up all backend resources allocated to this context.
+  """
   global tapServer
   q = tapServer + 'contexts/' + contextName
   r = requests.delete(q)
   return r
 
 def run(contextName, classPath, conf, sync=True):
+  """
+  Execute the module.
+
+  contextName -- the name of the context (environment)
+  classPath -- the fully qualified class name of the target module.
+  conf -- the module configuration string. It could be Java properties, JSON or HOCON.
+  sync -- default to True. If set to False,
+  this call will return a jobid instead of the actual output.
+  """
   global tapServer
   q = tapServer + 'jobs?' + 'appName=tap&context=' + contextName + '&classPath=' + classPath
   if (sync):
@@ -32,6 +48,12 @@ def run(contextName, classPath, conf, sync=True):
   return json.loads(r.text)
 
 def getJobOutput(jobId, timeout=300):
+  """
+  Use this method to wait and retrieve output of an async module execution.
+
+  jobId -- obtained by invoking the "run" method in async mode.
+  timeout -- this is how many seconds this method will wait before timing out. Default is 300.
+  """
   global tapServer
   q = tapServer + 'jobs/' + jobId
   r = requests.get(q)
