@@ -12,7 +12,17 @@ def connect(server):
 def createContext(contextName):
   """
   Create a context object.
-  The context name should be alphanumeric without any special characters.
+
+  This function creates a context object on the Spark jobserver. In addition to
+  a SparkContext and compute resources allocation, a context also creates a
+  namespace to support named RDD.
+
+  Args:
+    contextName: the unique identifier of the context, it should be alphanumeric
+      without any special characters.
+
+  Returns:
+    HTTP status code
   """
   global tapServer
   q = tapServer + 'contexts/' + contextName
@@ -21,7 +31,17 @@ def createContext(contextName):
 
 def deleteContext(contextName):
   """
-  Delete the context object and free up all backend resources allocated to this context.
+  Delete the context object.
+
+  Delete the SparkContext and free up all backend resources allocated to this
+  context.
+
+  Args:
+    contextName: the unique identifier of the context, it should be alphanumeric
+      without any special characters.
+
+  Returns:
+    HTTP status code
   """
   global tapServer
   q = tapServer + 'contexts/' + contextName
@@ -32,14 +52,24 @@ def run(contextName, classPath, conf, sync=True):
   """
   Execute the module.
 
-  contextName -- the name of the context (environment)
-  classPath -- the fully qualified class name of the target module.
-  conf -- the module configuration string. It could be Java properties, JSON or HOCON.
-  sync -- default to True. If set to False,
-  this call will return a jobid instead of the actual output.
+  Invokes the module's validate and runJob method.
+
+  Args:
+    contextName: the name of the context (environment)
+    classPath: the fully qualified class name of the target module.
+    conf: the module configuration string. It could be Java properties, JSON
+      or HOCON.
+    sync: default to True, and it will wait for the job to finish and then
+      returns the module's output. If set to False, this call will return the
+      jobid immediately.
+
+  Returns:
+    If sync is True, this function returns the module's output as a JSON string.
+    If sync is False, this function returns a jobid.
   """
   global tapServer
-  q = tapServer + 'jobs?' + 'appName=tap&context=' + contextName + '&classPath=' + classPath
+  q = tapServer + 'jobs?' + 'appName=tap&context=' +
+    contextName + '&classPath=' + classPath
   if (sync):
     q += '&sync=true'
   else:
@@ -51,8 +81,13 @@ def getJobOutput(jobId, timeout=300):
   """
   Use this method to wait and retrieve output of an async module execution.
 
-  jobId -- obtained by invoking the "run" method in async mode.
-  timeout -- this is how many seconds this method will wait before timing out. Default is 300.
+  Args:
+    jobId: obtained by invoking the "run" method in async mode.
+    timeout: this is how many seconds this method will wait before timing out.
+      Default is 300.
+
+  Returns:
+    Returns the module's output as a JSON string
   """
   global tapServer
   q = tapServer + 'jobs/' + jobId
