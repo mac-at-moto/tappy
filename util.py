@@ -5,6 +5,9 @@ import numpy as np
 from IPython.display import HTML
 
 def codeblock_toggle():
+  '''
+  Invoke this function to add a button to toggle the visibility of the code blocks in the notebook
+  '''
   return HTML('''
     <script>
       code_show=true; 
