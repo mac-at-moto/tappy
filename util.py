@@ -106,11 +106,10 @@ def unit_poly_verts(theta):
 
 
 def codeblock_toggle():
-  """Toggle on/off the code blocks
-  """
+  """Toggle on/off the code blocks"""
   return HTML('''
     <script>
-      code_show=true; 
+      code_show=false; 
       function code_toggle() {
        if (code_show){
        $('div.input').hide();
