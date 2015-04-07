@@ -10,8 +10,7 @@ def connect(server):
   tapServer = server
 
 def createContext(contextName):
-  """
-  Create a context object.
+  """Create a context object.
 
   This function creates a context object on the Spark jobserver. In addition to
   a SparkContext and compute resources allocation, a context also creates a
@@ -30,8 +29,7 @@ def createContext(contextName):
   return r
 
 def deleteContext(contextName):
-  """
-  Delete the context object.
+  """Delete the context object.
 
   Delete the SparkContext and free up all backend resources allocated to this
   context.
@@ -49,8 +47,7 @@ def deleteContext(contextName):
   return r
 
 def run(contextName, classPath, conf, sync=True):
-  """
-  Execute the module.
+  """Execute the module.
 
   Invokes the module's validate and runJob method.
 
@@ -68,8 +65,8 @@ def run(contextName, classPath, conf, sync=True):
     If sync is False, this function returns a jobid.
   """
   global tapServer
-  q = tapServer + 'jobs?' + 'appName=tap&context=' +
-    contextName + '&classPath=' + classPath
+  q = tapServer + 'jobs?' + 'appName=tap&context=' + contextName + \
+      '&classPath=' + classPath
   if (sync):
     q += '&sync=true'
   else:
@@ -78,8 +75,7 @@ def run(contextName, classPath, conf, sync=True):
   return json.loads(r.text)
 
 def getJobOutput(jobId, timeout=300):
-  """
-  Use this method to wait and retrieve output of an async module execution.
+  """Use this method to wait and retrieve output of an async module execution.
 
   Args:
     jobId: obtained by invoking the "run" method in async mode.
